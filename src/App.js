@@ -1,9 +1,9 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import Post from "./components/Post";
 
 //*This is our Mock Data (Hardcoded)
-const OnePost = {
+const MockPosts = {
   id: 1,
   description: "Me showing of my teams awesome note app Quire!",
   likes: 20,
@@ -34,20 +34,37 @@ const OnePost = {
   ],
 };
 
-const API_URL = "http://localhost:1337";
-
-const formatUrl = (url) => `${API_URL}${url}`;
-
 const App = () => {
-  const url = OnePost.image[0].url;
+  const [posts, setPosts] = useState([]);
 
-  const description = OnePost.description;
-  const likes = OnePost.likes;
+  // const url = OnePost.image[0].url;
+
+  // const description = OnePost.description;
+  // const likes = OnePost.likes;
+
+  useEffect(() => {
+    //*This is how we can make a async func inside a useEffect
+    const getPosts = async () => {
+      const res = await fetch("http://localhost:1337/posts");
+      const data = await res.json();
+      console.log(data);
+      setPosts(data);
+    };
+
+    getPosts();
+  }, []);
 
   return (
     <Main>
       <h1>IG - Strapi</h1>
-      <Post image={formatUrl(url)} desc={description} likes={likes} />
+      {posts.map((post, i) => (
+        <Post
+          key={i}
+          image={`http://localhost:1337${post.image[0].url}`}
+          desc={post.description}
+          likes={post.likes}
+        />
+      ))}
     </Main>
   );
 };
