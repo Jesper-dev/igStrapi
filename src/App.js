@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import Post from "./components/Post";
+import axios from "axios";
 
 //*This is our Mock Data (Hardcoded)
 const MockPosts = {
@@ -37,18 +38,13 @@ const MockPosts = {
 const App = () => {
   const [posts, setPosts] = useState([]);
 
-  // const url = OnePost.image[0].url;
-
-  // const description = OnePost.description;
-  // const likes = OnePost.likes;
-
   useEffect(() => {
     //*This is how we can make a async func inside a useEffect
     const getPosts = async () => {
-      const res = await fetch("http://localhost:1337/posts");
-      const data = await res.json();
-      console.log(data);
-      setPosts(data);
+      await axios.get("http://localhost:1337/posts").then((res) => {
+        setPosts(res.data);
+        console.log(res.data);
+      });
     };
 
     getPosts();
@@ -63,6 +59,7 @@ const App = () => {
           image={`http://localhost:1337${post.image[0].url}`}
           desc={post.description}
           likes={post.likes}
+          id={post.id}
         />
       ))}
     </Main>

@@ -1,7 +1,20 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
+import axios from "axios";
 
-const Post = ({ image, desc, likes }) => {
+const Post = ({ image, desc, likes, id }) => {
+  const [newLikes, setNewLikes] = useState(likes);
+
+  const onButtonClick = () => {
+    axios
+      .put(`http://localhost:1337/posts/${id}`, {
+        likes: likes + 1,
+      })
+      .then((res) => {
+        setNewLikes(res.data.likes);
+      });
+  };
+
   return (
     <Wrapper>
       <Img src={image} />
@@ -9,9 +22,10 @@ const Post = ({ image, desc, likes }) => {
       <div>
         <Likes>
           Likes:{" "}
-          <span style={{ color: "green", fontWeight: "bold" }}>{likes}</span>
+          <span style={{ color: "green", fontWeight: "bold" }}>{newLikes}</span>
         </Likes>
       </div>
+      <Button onClick={onButtonClick}>LIKE</Button>
     </Wrapper>
   );
 };
@@ -41,6 +55,12 @@ const Desc = styled.h4`
 const Likes = styled.p`
   font-size: 1.5rem;
   margin: 0%;
+`;
+
+const Button = styled.button`
+  width: 56px;
+  height: 32px;
+  outline: none;
 `;
 
 export default Post;
